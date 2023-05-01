@@ -16,4 +16,9 @@
       <Folder Include="Controllers\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\Solver\Solver.csproj" />
+    </ItemGroup>
+
 </Project>

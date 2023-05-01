@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Common;
+using Common.Contracts;
+using Common.Models;
+using Common.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Solver;
 
 namespace API.Controllers
 {
@@ -11,10 +11,17 @@ namespace API.Controllers
     [ApiController]
     public class SolverController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
+        private readonly IGameData _gameData;
+
+        public SolverController(IGameData gameData)
         {
-            return Ok();
+            _gameData = gameData;
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] List<GameState>? gameState = default)
+        {
+            return Ok(Solver.Solver.Solve(_gameData, gameState));
         }
     }
 }
