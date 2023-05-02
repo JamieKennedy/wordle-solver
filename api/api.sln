@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solver", "Solver\Solver.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{622A7FF1-2B08-4104-A839-40256CC37970}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulation", "Simulation\Simulation.csproj", "{58AEDAB2-D0CD-42D6-B4FE-071F82582975}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{622A7FF1-2B08-4104-A839-40256CC37970}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{622A7FF1-2B08-4104-A839-40256CC37970}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{622A7FF1-2B08-4104-A839-40256CC37970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58AEDAB2-D0CD-42D6-B4FE-071F82582975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58AEDAB2-D0CD-42D6-B4FE-071F82582975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58AEDAB2-D0CD-42D6-B4FE-071F82582975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58AEDAB2-D0CD-42D6-B4FE-071F82582975}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

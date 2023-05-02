@@ -8,13 +8,12 @@ namespace Solver
     {
         public static List<string> GetMatchingWords(string guess, string pattern, List<string> possibleWords)
         {
-            return possibleWords.Where(word => Utilities.GetPattern(guess, word).Equals(pattern)).ToList();
+            return possibleWords.AsParallel().Where(word => Utilities.GetPattern(guess, word).Equals(pattern)).ToList();
         }
 
         private static double CalcProbability(string guess, string pattern, IReadOnlyCollection<string> allWords)
         {
-            var count = (double) allWords.Count(word => Utilities.GetPattern(guess, word).Equals(pattern));
-            return count / allWords.Count;
+            return (double) allWords.Count(word => Utilities.GetPattern(guess, word).Equals(pattern)) / allWords.Count;
         }
 
         private static double CalcInformation(double probability)
@@ -24,11 +23,10 @@ namespace Solver
 
         public static double CalcExpectedInformation(string guess, IEnumerable<string> allPatterns, List<string> allWords)
         {
-            return allPatterns.Aggregate(0d, (acc, pattern) =>
+            return allPatterns.AsParallel().Sum(pattern =>
             {
                 var probability = CalcProbability(guess, pattern, allWords);
-                return acc + (probability * CalcInformation(probability));
-
+                return probability * CalcInformation(probability);
             });
         }
     }

@@ -24,7 +24,7 @@ namespace Solver
                 var filteredWords = GetMatchingWords(state.Guess, state.Pattern, possibleWords);
 
                 // Calculate expected information of each word and rank in descending order
-                responses = filteredWords.Select(word => new Response(word, CalcExpectedInformation(word, gameData.AllPatterns, filteredWords)))
+                responses = filteredWords.AsParallel().Select(word => new Response(word, CalcExpectedInformation(word, gameData.AllPatterns, filteredWords)))
                     .OrderByDescending(option => option.Score).ToList();
 
                 possibleWords = responses.Select(response => response.Word).ToList();
