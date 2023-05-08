@@ -4,12 +4,12 @@ namespace Simulation.Models
 {
     public class SimulationData
     {
-        public List<GameState> State { get; set; }
+        public GameState State { get; set; }
         public int RoundCount { get; set; }
 
         public SimulationData()
         {
-            State = new List<GameState>();
+            State = new GameState();
             RoundCount = 0;
         }
     }

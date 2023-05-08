@@ -8,29 +8,56 @@ namespace Solver
 {
     public static class Solver
     {
-        public static List<Response> Solve(IGameData gameData, List<GameState>? states)
+        public static Response Solve(IGameData gameData, GameState? state)
         {
-            List<Response> responses = new List<Response>();
-            // If no state then assume it is state of the game and return a pre calculated value
-            if (states == null || !states.Any()) return new List<Response>() { new Response("SLATE", 1) };
+            var scores = new List<Score>();
+            IReadOnlyCollection<string> filteredWords;
+            IReadOnlyCollection<string> patterns = gameData.AllPatterns;
 
-            // init to all words
-            var possibleWords = gameData.PossibleWords;
 
-            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-            foreach (var state in states)
+            // If no state then assume it is first state of the game and return a pre calculated value
+            if (state?.Rounds == null || !state.Rounds.Any())
             {
-                // Get the possible words for this game state
-                var filteredWords = GetMatchingWords(state.Guess, state.Pattern, possibleWords);
+                scores = gameData.EmptyResults.OrderByDescending(score => score.Value).ToList();
 
-                // Calculate expected information of each word and rank in descending order
-                responses = filteredWords.AsParallel().Select(word => new Response(word, CalcExpectedInformation(word, gameData.AllPatterns, filteredWords)))
-                    .OrderByDescending(option => option.Score).ToList();
-
-                possibleWords = responses.Select(response => response.Word).ToList();
+                return new Response(gameData.PossibleWords, scores);
             }
 
-            return responses;
+            // init to all words
+            IReadOnlyCollection<string> possibleWords = gameData.PossibleWords;
+
+
+            if (state.PossibleWords != null && state.PossibleWords.Any())
+            {
+                // Use the provided list of possible words, so only need to check latest round
+                var round = state.Rounds.Last();
+                possibleWords = state.PossibleWords;
+
+                filteredWords = GetMatchingWords(round.Guess, round.Pattern, ref possibleWords);
+
+                // Calculate expected information of each word and rank in descending order
+                scores = filteredWords.AsParallel().Select(word => new Score(word, CalcExpectedInformation(word, ref patterns, gameData.ProbabilityMap)))
+                    .OrderByDescending(option => option.Value).ToList();
+
+                possibleWords = scores.Select(response => response.Word).ToList();
+            }
+
+
+
+            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+            foreach (var round in state.Rounds)
+            {
+                // Get the possible words for this game state
+                filteredWords = GetMatchingWords(round.Guess, round.Pattern, ref possibleWords);
+
+                // Calculate expected information of each word and rank in descending order
+                scores = filteredWords.AsParallel().Select(word => new Score(word, CalcExpectedInformation(word, ref patterns, gameData.ProbabilityMap)))
+                    .OrderByDescending(option => option.Value).ToList();
+
+                possibleWords = scores.Select(response => response.Word).ToList();
+            }
+
+            return new Response(possibleWords, scores);
 
 
         }

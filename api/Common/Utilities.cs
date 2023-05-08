@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.InteropServices.JavaScript;
+using System.Text;
 using Microsoft.Extensions.Primitives;
 
 namespace Common
@@ -12,6 +13,11 @@ namespace Common
             return pattern.Length == Constants.LENGTH && pattern.ToLower().All(c => chars.Contains(c));
         }
 
+        public static string GetPatternFromMap(string wordA, string wordB, Dictionary<(string, string), string> map)
+        {
+            return map[(wordA, wordB)];
+        }
+
         public static string GetPattern(string wordA, string wordB)
         {
             if (string.Equals(wordA, wordB, StringComparison.CurrentCultureIgnoreCase))
@@ -19,22 +25,44 @@ namespace Common
                 return new string(Constants.IN_WORD_CORRECT_POSITION, 5);
             }
 
-            var pattern = new StringBuilder();
+            char[] pattern = new char[] { 'X', 'X', 'X', 'X', 'X' };  // default to all incorrect
 
+            // Green Pass
             for (int i = 0; i < wordA.Length; i++)
             {
-                if (wordB.Contains(wordA.ToLower()[i]))
+                if(wordA.ToLower()[i] == wordB.ToLower()[i])
                 {
-                    // Letter in wordB
-                    pattern.Append(wordA.ToLower()[i] == wordB[i] ? Constants.IN_WORD_CORRECT_POSITION : Constants.IN_WORD_INCORRECT_POSITION);
-                    continue;
+                    pattern[i] = 'G';
                 }
-
-                // Letter not in wordB
-                pattern.Append(Constants.NOT_IN_WORD);
             }
 
-            return pattern.ToString();
+            // Yellow Pass
+            var checkedChars = new List<char>();
+            for (int i = 0; i < wordA.Length; i++)
+            {
+                if (wordB.ToLower().Contains(wordA.ToLower()[i]) && wordA.ToLower()[i] != wordB.ToLower()[i])
+                {
+                    if (checkedChars.Contains(wordA.ToLower()[i]))
+                    {
+                        // already checked so, needs to be another in the word
+                        if (wordB.ToLower().Count(c => c.Equals(wordA.ToLower()[i])) > checkedChars.Count(c => c.Equals(wordA.ToLower()[i])))
+                        {
+                            pattern[i] = 'Y';
+                        }
+
+                        continue;
+                    }
+
+
+                    pattern[i] = 'Y';
+                }
+
+                checkedChars.Add(wordA.ToLower()[i]);
+            }
+
+
+            return new string(pattern);
+
         }
 
         public static IEnumerable<IEnumerable<T>> GetPatterns<T>(IEnumerable<T> list, int length)

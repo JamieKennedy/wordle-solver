@@ -14,58 +14,62 @@ namespace Simulation
     {
         public static IGameData ConfigureGameData()
         {
-            var allowedWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/allowed_words.txt")));
-            var possibleWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/possible_words.txt")));
-            var allPatterns = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/all_patterns.txt")));
+            var allowedWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                @"Data/allowed_words.txt")));
+            var possibleWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                @"Data/possible_words.txt")));
+            var allPatterns = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                @"Data/all_patterns.txt")));
+            var emptyResponse = JsonConvert.DeserializeObject<List<Score>>(
+                File.ReadAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/empty_result.json")));
 
-            return new GameData(allowedWords, possibleWords, allPatterns);
+            var patternMap = PreComputeHelpers.BuildPatternMap(possibleWords);
+            var probabilityMap = PreComputeHelpers.BuildProbabilityMap(possibleWords, allPatterns, patternMap);
+
+            return new GameData(allowedWords, possibleWords, allPatterns, emptyResponse, patternMap, probabilityMap);
         }
 
         public static SimulationData Play(string openingWord, string answer, IGameData gameData)
         {
             var simData = new SimulationData();
 
+
             var currentGuess = openingWord;
             var currentPattern = "";
 
-            while(currentPattern != "GGGGG")
+            while (currentPattern != "GGGGG" && simData.RoundCount < 6)
             {
                 simData.RoundCount += 1;
 
                 currentPattern = Utilities.GetPattern(currentGuess, answer);
-                simData.State.Add(new GameState(currentGuess, currentPattern));
+                simData.State.Rounds.Add(new Round(currentGuess, currentPattern));
 
                 if (currentPattern != "GGGGG")
                 {
-                    var newOptions = FetchOptions(simData.State, gameData);
+                    var response = FetchOptions(simData.State, gameData);
 
-                    if (newOptions.Count > 0)
-                    {
-                        currentGuess = newOptions[0].Word.ToUpper();
-                    }
+                    if (response.Scores.Any()) currentGuess = response.Scores[0].Word.ToUpper();
+
+                    simData.State.PossibleWords = response.PossibleWords;
                 }
             }
 
             return simData;
         }
 
-        private static List<Response> FetchOptions(List<GameState> gameState, IGameData gameData)
+        private static Response FetchOptions(GameState gameState, IGameData gameData)
         {
             return Solver.Solver.Solve(gameData, gameState);
         }
 
-        public static void PrintSimulation(string openingWord, string answer, SimulationData simData, int answerCount, int openerCount, int totalGames)
+        public static void PrintSimulation(string openingWord, string answer, SimulationData simData, int answerCount, int openerCount, int totalOpeners,
+                                           int totalAnswers, TimeSpan? averageOpenerTime)
         {
             Console.Clear();
 
-            foreach (var s in simData.State)
-            {
-                Console.WriteLine(s.Pattern);
-            }
-
-            Console.WriteLine($"{new string('\n', 6 - simData.RoundCount)}");
-            Console.WriteLine($"Opening Word: {openingWord} ({openerCount}/{totalGames})");
-            Console.WriteLine($"Answer: {answer} ({answerCount}/{totalGames})");
+            Console.WriteLine($"Opening Word: {openingWord} ({openerCount}/{totalOpeners})");
+            Console.WriteLine($"Average Opening Time: {(averageOpenerTime == null ? "~" : averageOpenerTime.ToString())}");
+            Console.WriteLine($"Answer: {answer} ({answerCount}/{totalAnswers})");
             Console.WriteLine($"Score: {simData.RoundCount}");
             Console.WriteLine();
         }

@@ -2,14 +2,13 @@
 using Common;
 using Common.Contracts;
 using Common.Models;
-using Microsoft.AspNetCore.Hosting.Server;
 using Newtonsoft.Json;
 
-namespace API.Extensions
+namespace Benchmarks
 {
-    public static class ServiceExtensions
+    public class BenchmarkUtilities
     {
-        public static void ConfigureGameData(this IServiceCollection services)
+        public static IGameData ConfigureGameData()
         {
             var allowedWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/allowed_words.txt")));
             var possibleWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/possible_words.txt")));
@@ -20,7 +19,7 @@ namespace API.Extensions
             var patternMap = PreComputeHelpers.BuildPatternMap(possibleWords);
             var probabilityMap = PreComputeHelpers.BuildProbabilityMap(possibleWords, allPatterns, patternMap);
 
-            services.AddSingleton<IGameData, GameData>(data => new GameData(allowedWords, possibleWords, allPatterns, emptyResponse, patternMap, probabilityMap));
+            return new GameData(allowedWords, possibleWords, allPatterns, emptyResponse, patternMap, probabilityMap);
         }
     }
 }

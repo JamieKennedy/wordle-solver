@@ -2,13 +2,14 @@
 {
     public class GameState
     {
-        public string Guess { get; init; }
-        public string Pattern { get; init; }
 
-        public GameState(string guess, string pattern)
+        public List<Round> Rounds { get; set; }
+        public IReadOnlyCollection<string>? PossibleWords { get; set; }
+
+        public GameState()
         {
-            Guess = guess;
-            Pattern = pattern;
+            Rounds = new List<Round>();
+            PossibleWords = new List<string>();
         }
     }
 }

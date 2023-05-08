@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] List<GameState>? gameState = default)
+        public IActionResult Post([FromBody] GameState? gameState = default)
         {
             return Ok(Solver.Solver.Solve(_gameData, gameState));
         }
