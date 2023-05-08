@@ -72,5 +72,12 @@ namespace Common
                 .SelectMany(t => list,
                     (t1, t2) => t1.Concat(new T[] { t2 }));
         }
+
+        public static void ClearLastLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+        }
     }
 }

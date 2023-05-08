@@ -66,6 +66,12 @@ namespace Simulation
                                            int totalAnswers, TimeSpan? averageOpenerTime)
         {
             Console.Clear();
+            foreach (var s in simData.State.Rounds)
+            {
+                Console.WriteLine(s.Pattern);
+            }
+
+            Console.WriteLine($"{new string('\n', 6 - simData.RoundCount)}");
 
             Console.WriteLine($"Opening Word: {openingWord} ({openerCount}/{totalOpeners})");
             Console.WriteLine($"Average Opening Time: {(averageOpenerTime == null ? "~" : averageOpenerTime.ToString())}");

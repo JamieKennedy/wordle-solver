@@ -18,7 +18,9 @@ namespace Solver
             // If no state then assume it is first state of the game and return a pre calculated value
             if (state?.Rounds == null || !state.Rounds.Any())
             {
-                scores = gameData.EmptyResults.OrderByDescending(score => score.Value).ToList();
+                //scores = gameData.EmptyResults.OrderByDescending(score => score.Value).ToList();
+                scores = gameData.PossibleWords.AsParallel().Select(word => new Score(word, CalcExpectedInformation(word, ref patterns, gameData.ProbabilityMap)))
+                    .OrderByDescending(option => option.Value).ToList();
 
                 return new Response(gameData.PossibleWords, scores);
             }
