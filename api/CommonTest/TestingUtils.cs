@@ -1,12 +1,11 @@
 ﻿using System.Reflection;
-using Common.Models;
 using Newtonsoft.Json;
 
 namespace CommonTest
 {
-    public record TestDataObj(string Answer, string Guess, string Pattern);
+    public abstract record TestDataObj(string Answer, string Guess, string Pattern);
 
-    public class TestingUtils
+    public static class TestingUtils
     {
         public static List<TestDataObj> GetTestData()
         {

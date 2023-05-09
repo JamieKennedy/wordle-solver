@@ -1,9 +1,6 @@
-using Common;
 using Common.Contracts;
 using Common.Models;
-using Common.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Solver;
 
 namespace API.Controllers
 {

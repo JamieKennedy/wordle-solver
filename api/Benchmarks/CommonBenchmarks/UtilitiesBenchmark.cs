@@ -3,7 +3,7 @@ using Common.Contracts;
 
 namespace Benchmarks.CommonBenchmarks
 {
-    public class UtilitiesBenchmark
+    public static class UtilitiesBenchmark
     {
         public static void GetPatternBenchmark(IGameData gameData, Dictionary<(string, string), string> map)
         {
@@ -38,11 +38,12 @@ namespace Benchmarks.CommonBenchmarks
             return end;
         }
 
-        private static TimeSpan GetPatternFromMap(string wordA, string wordB, Dictionary<(string, string), string> map)
+        // ReSharper disable once UnusedMember.Local
+        private static TimeSpan GetPatternFromMap(string wordA, string wordB, Dictionary<string, string> map)
         {
             var sw = Stopwatch.StartNew();
 
-            Common.Utilities.GetPatternFromMap(wordA, wordB, map);
+            Common.Utilities.GetPatternFromMap(wordA + ':' + wordB, map);
 
             var end = sw.Elapsed;
 

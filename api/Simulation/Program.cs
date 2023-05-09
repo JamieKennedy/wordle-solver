@@ -2,17 +2,13 @@
 
 
 using System.Diagnostics;
-using Common.Models;
 using Simulation;
-using Simulation.Models;
 
-var gameData = SimulationUtilities.ConfigureGameData();
+var gameData = Common.Utilities.GetGameData();
 var scores = new Dictionary<string, decimal>();
 var openerCount = 1;
 var totalTime = TimeSpan.Zero;
 TimeSpan? averageOpenerTime = null;
-
-var sw = new Stopwatch();
 
 
 Console.WriteLine("Fetching opening words...");
@@ -20,7 +16,7 @@ var openingWords = Solver.Solver.Solve(gameData, null).Scores.Select(score => sc
 
 foreach (var openingWord in openingWords)
 {
-    sw = Stopwatch.StartNew();
+    var sw = Stopwatch.StartNew();
 
     var totalScore = 0;
     var gameCount = 0;

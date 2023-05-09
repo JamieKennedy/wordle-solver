@@ -1,6 +1,6 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using Microsoft.Extensions.Primitives;
+﻿using System.Reflection;
+using Common.Models;
+using Newtonsoft.Json;
 
 namespace Common
 {
@@ -13,9 +13,9 @@ namespace Common
             return pattern.Length == Constants.LENGTH && pattern.ToLower().All(c => chars.Contains(c));
         }
 
-        public static string GetPatternFromMap(string wordA, string wordB, Dictionary<(string, string), string> map)
+        public static string GetPatternFromMap(string key, Dictionary<string, string> map)
         {
-            return map[(wordA, wordB)];
+            return map[key];
         }
 
         public static string GetPattern(string wordA, string wordB)
@@ -65,19 +65,34 @@ namespace Common
 
         }
 
-        public static IEnumerable<IEnumerable<T>> GetPatterns<T>(IEnumerable<T> list, int length)
+        public static GameData GetGameData()
         {
-            if (length == 1) return list.Select(t => new T[] { t });
-            return GetPatterns(list, length - 1)
-                .SelectMany(t => list,
-                    (t1, t2) => t1.Concat(new T[] { t2 }));
+            var dataPath = GetDataDir();
+
+            var allowedWords = new List<string>(File.ReadAllLines(Path.Combine(dataPath,
+                @"allowed_words.txt")));
+            var possibleWords = new List<string>(File.ReadAllLines(Path.Combine(dataPath,
+                @"possible_words.txt")));
+            var allPatterns = new List<string>(File.ReadAllLines(Path.Combine(dataPath,
+                @"all_patterns.txt")));
+            var openers = JsonConvert.DeserializeObject<List<Score>>(
+                File.ReadAllText(Path.Combine(dataPath, @"openers.json")));
+
+            var patternMap = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                File.ReadAllText(Path.Combine(dataPath, @"pattern_map.json")));
+            var probabilityMap = JsonConvert.DeserializeObject<Dictionary<string, double>>(
+                File.ReadAllText(Path.Combine(dataPath, @"probability_map.json")));
+
+            return new GameData(allowedWords, possibleWords, allPatterns, openers, patternMap, probabilityMap);
         }
 
-        public static void ClearLastLine()
+        public static string GetDataDir()
         {
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/");
+
+
         }
+
+
     }
 }

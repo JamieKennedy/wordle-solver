@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using Common;
-using Common.Contracts;
+﻿using Common.Contracts;
 using Common.Models;
 using static Solver.SolverUtilities;
 
@@ -18,11 +16,9 @@ namespace Solver
             // If no state then assume it is first state of the game and return a pre calculated value
             if (state?.Rounds == null || !state.Rounds.Any())
             {
-                //scores = gameData.EmptyResults.OrderByDescending(score => score.Value).ToList();
-                scores = gameData.PossibleWords.AsParallel().Select(word => new Score(word, CalcExpectedInformation(word, ref patterns, gameData.ProbabilityMap)))
-                    .OrderByDescending(option => option.Value).ToList();
+                scores = gameData.Openers;
 
-                return new Response(gameData.PossibleWords, scores);
+                return new Response(0, scores, gameData.PossibleWords);
             }
 
             // init to all words
@@ -59,7 +55,7 @@ namespace Solver
                 possibleWords = scores.Select(response => response.Word).ToList();
             }
 
-            return new Response(possibleWords, scores);
+            return new Response(state.Rounds.Count, scores, possibleWords);
 
 
         }

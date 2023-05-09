@@ -1,12 +1,6 @@
-﻿using Benchmarks;
-using Benchmarks.CommonBenchmarks;
-using Benchmarks.SolverBenchmarks;
+﻿using Benchmarks.SolverBenchmarks;
 
-var gameData = BenchmarkUtilities.ConfigureGameData();
-var map = Common.PreComputeHelpers.BuildPatternMap(gameData.PossibleWords);
+var gameData = Common.Utilities.GetGameData();
 
 // Calc Probability
 SolverUtilitiesBenchmarks.CalcProbabilityBenchmarks(gameData);
-
-// // Get Pattern
-// UtilitiesBenchmark.GetPatternBenchmark(gameData);

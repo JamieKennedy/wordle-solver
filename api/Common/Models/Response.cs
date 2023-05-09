@@ -1,4 +1,4 @@
 ﻿namespace Common.Models
 {
-    public record Response(IReadOnlyCollection<string> PossibleWords, List<Score> Scores);
+    public record Response(int RoundNum, List<Score> Scores, IReadOnlyCollection<string> PossibleWords);
 }
