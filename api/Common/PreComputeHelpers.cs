@@ -35,7 +35,7 @@
             foreach (var word in allWords)
             {
                 Console.Clear();
-                Console.WriteLine("Pre-computing patterns...");
+                Console.WriteLine("Pre-computing probabilities...");
                 Console.WriteLine($"({count} / {allWords.Count * allPatterns.Count})");
 
                 foreach (var pattern in allPatterns)

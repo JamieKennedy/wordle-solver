@@ -58,5 +58,35 @@
     "Answer": "CREPE",
     "Guess": "SPEED",
     "Pattern": "XYGYX"
+  },
+  {
+    "Answer": "COCOA",
+    "Guess": "MANGE",
+    "Pattern": "XYXXX"
+  },
+  {
+    "Answer": "COCOA",
+    "Guess": "ROGER",
+    "Pattern": "XGXXX"
+  },
+  {
+    "Answer": "COCOA",
+    "Guess": "VOGUE",
+    "Pattern": "XGXXX"
+  },
+  {
+    "Answer": "COCOA",
+    "Guess": "BLOWN",
+    "Pattern": "XXYXX"
+  },
+  {
+    "Answer": "COCOA",
+    "Guess": "HYENA",
+    "Pattern": "XXXXG"
+  },
+  {
+    "Answer": "COCOA",
+    "Guess": "GLOSS",
+    "Pattern": "XXYXX"
   }
 ]

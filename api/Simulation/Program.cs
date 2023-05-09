@@ -16,7 +16,7 @@ var sw = new Stopwatch();
 
 
 Console.WriteLine("Fetching opening words...");
-var openingWords = Solver.Solver.Solve(gameData, null).Scores.Select(score => score.Word).ToList().GetRange(0, 500);
+var openingWords = Solver.Solver.Solve(gameData, null).Scores.Select(score => score.Word).ToList();
 
 foreach (var openingWord in openingWords)
 {
