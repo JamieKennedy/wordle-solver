@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Solver\Solver.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="..\commonsettings.json" CopyToOutputDirectory="PreserveNewest" LinkBase="\" />
+    </ItemGroup>
+
 </Project>
