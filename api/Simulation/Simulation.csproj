@@ -17,7 +17,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\commonsettings.json" CopyToOutputDirectory="PreserveNewest" LinkBase="\" />
+        <Content Include="..\options.json" CopyToOutputDirectory="PreserveNewest" LinkBase="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="settings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

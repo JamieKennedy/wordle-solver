@@ -4,7 +4,9 @@
 using System.Diagnostics;
 using Simulation;
 
-var gameData = Common.Utilities.GetGameData();
+const string settingsFile = "settings.json";
+
+var gameData = Common.Utilities.GetGameData(settingsFile);
 var scores = new Dictionary<string, decimal>();
 var openerCount = 1;
 var totalTime = TimeSpan.Zero;

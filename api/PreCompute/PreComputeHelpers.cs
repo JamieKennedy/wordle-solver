@@ -6,22 +6,23 @@ namespace PreCompute
     {
         public static Dictionary<string, string> BuildPatternMap(List<string> allWords)
         {
-            var count = 0;
+            var patternCount = 0;
             var map = new Dictionary<string, string>();
 
             foreach (var wordA in allWords)
             {
-                Console.Clear();
-                Console.WriteLine("Pre-computing patterns...");
-                Console.WriteLine($"({count} / {Math.Pow(allWords.Count, 2)})");
+
 
                 foreach (var wordB in allWords)
                 {
-                    count += 1;
+                    patternCount += 1;
 
-                    map[$"{wordA}:{wordB}"] = Utilities.GetPattern(wordA, wordB);
+                    map[wordA + ':' + wordB] = Utilities.GetPattern(wordA, wordB);
 
-
+                    if (patternCount % 1000 == 0 || patternCount.Equals((int)Math.Pow(allWords.Count, 2)))
+                    {
+                        PrintStatus(patternCount, (int) Math.Pow(allWords.Count, 2), 0, 0);
+                    }
                 }
             }
 
@@ -29,10 +30,10 @@ namespace PreCompute
         }
 
         public static Dictionary<string, double> BuildProbabilityMap(IReadOnlyCollection<string> allWords, IReadOnlyCollection<string> allPatterns,
-                                                                                          Dictionary<string, string> patternMap)
+                                                                       Dictionary<string, string> patternMap)
         {
             var map = new Dictionary<string, double>();
-            var count = 0;
+            var probabilityCount = 0;
 
             foreach (var word in allWords)
             {
@@ -40,17 +41,32 @@ namespace PreCompute
 
                 foreach (var pattern in allPatterns)
                 {
-                    count += 1;
+                    probabilityCount += 1;
 
-                    map[$"{word}:{pattern}"] = (double) allWords.Count(w => Utilities.GetPatternFromMap(word + ':' + w, patternMap).Equals(pattern)) / allWords.Count;
+                    map[word + ':' + pattern] = (double) allWords.Count(w => Utilities.GetPatternFromMap(word, w, patternMap).Equals(pattern)) / allWords.Count;
 
-                    Console.Clear();
-                    Console.WriteLine("Pre-computing probabilities...");
-                    Console.WriteLine($"({count} / {allWords.Count * allPatterns.Count})");
+                    if (probabilityCount % 100 == 0 || probabilityCount.Equals(allWords.Count * allPatterns.Count))
+                    {
+                        PrintStatus((int) Math.Pow(allWords.Count, 2), (int) Math.Pow(allWords.Count, 2), probabilityCount, allWords.Count * allPatterns.Count);
+                    }
                 }
             }
 
             return map;
+        }
+
+        public static void PrintStatus(int patternCount, int totalPatterns, int probabilityCount, int totalProbability)
+        {
+            Console.Clear();
+            Console.WriteLine("Computing Patterns...");
+            Console.WriteLine($"({patternCount} / {totalPatterns})");
+
+
+            if (probabilityCount <= 0) return;
+            Console.WriteLine();
+            Console.WriteLine("Computing probabilities...");
+            Console.WriteLine($"({probabilityCount} / {totalProbability})");
+
         }
     }
 }

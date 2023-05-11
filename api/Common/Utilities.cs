@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Common.Models;
+﻿using Common.Models;
 using Newtonsoft.Json;
 
 namespace Common
@@ -13,9 +12,9 @@ namespace Common
             return pattern.Length == Constants.LENGTH && pattern.ToLower().All(c => chars.Contains(c));
         }
 
-        public static string GetPatternFromMap(string key, Dictionary<string, string> map)
+        public static string GetPatternFromMap(string wordA, string wordB, Dictionary<string, string> map)
         {
-            return map[key];
+            return map[wordA + ':' + wordB];
         }
 
         public static string GetPattern(string wordA, string wordB)
@@ -65,9 +64,13 @@ namespace Common
 
         }
 
-        public static GameData GetGameData()
+        public static GameData GetGameData(string settingsPath, string dataPath = null)
         {
-            var dataPath = GetDataDir();
+            if (dataPath == null)
+            {
+                dataPath = GetDataDir(settingsPath);
+            }
+
 
             var allowedWords = new List<string>(File.ReadAllLines(Path.Combine(dataPath,
                 @"allowed_words.txt")));
@@ -79,20 +82,26 @@ namespace Common
                 File.ReadAllText(Path.Combine(dataPath, @"openers.json")));
 
             var patternMap = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                File.ReadAllText(Path.Combine(dataPath, @"pattern_map.json")));
+                                                                                             File.ReadAllText(Path.Combine(dataPath, @"pattern_map.json")));
             var probabilityMap = JsonConvert.DeserializeObject<Dictionary<string, double>>(
-                File.ReadAllText(Path.Combine(dataPath, @"probability_map.json")));
+                                                                                                 File.ReadAllText(Path.Combine(dataPath, @"probability_map.json")));
 
             return new GameData(allowedWords, possibleWords, allPatterns, openers, patternMap, probabilityMap);
         }
 
-        public static string GetDataDir()
+        public static string GetDataDir(string settingsPath)
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/");
+            if (!File.Exists(settingsPath)) throw new ArgumentException("Invalid Settings File");
 
+            var options = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
 
+            if (options == null)
+            {
+                throw new ArgumentException("Invalid Settings File");
+            }
+
+            return options.DataPath;
         }
-
 
     }
 }

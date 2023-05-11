@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+﻿using Common;
 using Newtonsoft.Json;
 using PreCompute;
 
-var possibleWords = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
-    @"Data/possible_words.txt")));
-var allPatterns = new List<string>(File.ReadAllLines(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
-    @"Data/all_patterns.txt")));
+const string settingsPath = "settings.json";
 
-var basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
+var dataPath = Utilities.GetDataDir(settingsPath);
 
-if (basePath == null) return;
-var dataPath = Path.Combine(basePath , "Data");
+if (string.IsNullOrEmpty(dataPath)) return;
+
+var possibleWords = new List<string>(File.ReadAllLines(Path.Combine(dataPath,
+    "possible_words.txt")));
+var allPatterns = new List<string>(File.ReadAllLines(Path.Combine(dataPath,
+    "all_patterns.txt")));
 
 var patternMap = PreComputeHelpers.BuildPatternMap(possibleWords);
 

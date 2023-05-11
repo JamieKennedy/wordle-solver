@@ -10,7 +10,7 @@ namespace CommonTest
         public static List<TestDataObj> GetTestData()
         {
             return JsonConvert.DeserializeObject<List<TestDataObj>>(
-                File.ReadAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"Data/TestData.json")));
+                File.ReadAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, @"TestData.json")));
         }
 
         public static Dictionary<(string, string), string> BuildTestDataMap()

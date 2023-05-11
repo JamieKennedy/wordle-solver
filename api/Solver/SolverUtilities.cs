@@ -12,12 +12,12 @@ namespace Solver
         public static double CalcProbability(string guess, string pattern, IReadOnlyCollection<string> allWords,
                                              Dictionary<string, string> patternMap)
         {
-            return (double) allWords.Count(word => Utilities.GetPatternFromMap(guess + ':' + word, patternMap).Equals(pattern)) / allWords.Count;
+            return (double) allWords.Count(word => Utilities.GetPatternFromMap(guess, word, patternMap).Equals(pattern)) / allWords.Count;
         }
 
-        public static double CalcProbabilityFromMap(string key, Dictionary<string, double> probabilityMap)
+        public static double CalcProbabilityFromMap(string guess, string pattern, Dictionary<string, double> probabilityMap)
         {
-            return probabilityMap[key];
+            return probabilityMap[guess + ':' + pattern];
         }
 
         private static double CalcInformation(double probability)
@@ -29,7 +29,7 @@ namespace Solver
         {
             return allPatterns.AsParallel().Sum(pattern =>
             {
-                var probability = CalcProbabilityFromMap(guess + ':' + pattern, probabilityMap);
+                var probability = CalcProbabilityFromMap(guess, pattern, probabilityMap);
                 return probability * CalcInformation(probability);
             });
         }
